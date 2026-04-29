@@ -36,7 +36,29 @@ func generateConsoleSelectorLabels() map[string]string {
 	}
 }
 
+// consoleLocalesPath is the path to the locales JSON file inside the console image.
+const consoleLocalesPath = "/usr/share/nginx/html/locales/en/plugin__lightspeed-console-plugin.json"
+
+// consoleLocalesFilename is the filename of the locales JSON file.
+const consoleLocalesFilename = "plugin__lightspeed-console-plugin.json"
+
+// consoleLocalesRewriteAwk is the awk script that performs case-preserving
+// OpenShift -> OpenStack replacement only in JSON values (after the first `": `).
+const consoleLocalesRewriteAwk = `{
+  idx = index($0, "\": ")
+  if (idx > 0) {
+    key_part = substr($0, 1, idx + 2)
+    val_part = substr($0, idx + 3)
+    gsub(/OpenShift/, "OpenStack", val_part)
+    gsub(/openshift/, "openstack", val_part)
+    gsub(/OPENSHIFT/, "OPENSTACK", val_part)
+    printf "%s%s\n", key_part, val_part
+  } else { print }
+}`
+
 // buildConsoleDeploymentSpec builds the Deployment spec for the console plugin.
+// Includes an init container that rewrites OpenShift references to OpenStack
+// in the locales JSON file using an emptyDir volume.
 func buildConsoleDeploymentSpec(consoleImage string) appsv1.DeploymentSpec {
 	replicas := int32(1)
 	volumeDefaultMode := VolumeDefaultMode
@@ -53,6 +75,23 @@ func buildConsoleDeploymentSpec(consoleImage string) appsv1.DeploymentSpec {
 			},
 			Spec: corev1.PodSpec{
 				ServiceAccountName: ConsoleUIServiceAccountName,
+				InitContainers: []corev1.Container{
+					{
+						Name:  "rewrite-locales",
+						Image: consoleImage,
+						Command: []string{
+							"sh", "-c",
+							"awk '" + consoleLocalesRewriteAwk + "' " +
+								consoleLocalesPath + " > /locales-rewrite/" + consoleLocalesFilename,
+						},
+						VolumeMounts: []corev1.VolumeMount{
+							{
+								Name:      "locales-rewrite",
+								MountPath: "/locales-rewrite",
+							},
+						},
+					},
+				},
 				Containers: []corev1.Container{
 					{
 						Name:  "lightspeed-console-plugin",
@@ -81,6 +120,12 @@ func buildConsoleDeploymentSpec(consoleImage string) appsv1.DeploymentSpec {
 								Name:      "nginx-temp",
 								MountPath: "/tmp/nginx",
 							},
+							{
+								Name:      "locales-rewrite",
+								MountPath: consoleLocalesPath,
+								SubPath:   consoleLocalesFilename,
+								ReadOnly:  true,
+							},
 						},
 					},
 				},
@@ -107,6 +152,12 @@ func buildConsoleDeploymentSpec(consoleImage string) appsv1.DeploymentSpec {
 					},
 					{
 						Name: "nginx-temp",
+						VolumeSource: corev1.VolumeSource{
+							EmptyDir: &corev1.EmptyDirVolumeSource{},
+						},
+					},
+					{
+						Name: "locales-rewrite",
 						VolumeSource: corev1.VolumeSource{
 							EmptyDir: &corev1.EmptyDirVolumeSource{},
 						},
