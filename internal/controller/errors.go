@@ -36,6 +36,18 @@ var (
 	ErrCreateLlamaStackConfigMap    = errors.New("failed to create Llama Stack configmap")
 	ErrGenerateLlamaStackConfigMap  = errors.New("failed to generate Llama Stack configmap")
 
+	// Console Plugin Errors
+	ErrReconcileConsolePlugin     = errors.New("failed to reconcile console plugin")
+	ErrReconcileConsoleDeployment = errors.New("failed to reconcile console deployment")
+	ErrReconcileConsoleConfigMap  = errors.New("failed to reconcile console configmap")
+	ErrReconcileConsoleService    = errors.New("failed to reconcile console service")
+	ErrReconcileConsoleNetPolicy  = errors.New("failed to reconcile console network policy")
+	ErrReconcileConsoleSA         = errors.New("failed to reconcile console service account")
+	ErrReconcileConsoleTLSSecret  = errors.New("failed to reconcile console TLS secret")
+	ErrActivateConsolePlugin      = errors.New("failed to activate console plugin")
+	ErrDeactivateConsolePlugin    = errors.New("failed to deactivate console plugin")
+	ErrDeleteConsolePlugin        = errors.New("failed to delete console plugin")
+
 	// Postgres Errors
 	ErrCreatePostgresDeployment      = errors.New("failed to create Postgres deployment")
 	ErrCreatePostgresService         = errors.New("failed to create Postgres service")

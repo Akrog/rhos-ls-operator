@@ -103,6 +103,18 @@ const (
 	RHOSOLightspeedOwnerIDLabel = "openstack.org/lightspeed-owner-id"
 	ServiceIDRHOSO              = "rhos-lightspeed"
 
+	// Console Plugin
+	ConsoleUIConfigMapName         = "lightspeed-console-plugin"
+	ConsoleUIServiceCertSecretName = "lightspeed-console-plugin-cert"
+	ConsoleUIServiceName           = "lightspeed-console-plugin"
+	ConsoleUIDeploymentName        = "lightspeed-console-plugin"
+	ConsoleUIHTTPSPort             = int32(9443)
+	ConsoleUIPluginName            = "lightspeed-console-plugin"
+	ConsoleUIServiceAccountName    = "lightspeed-console-plugin"
+	ConsoleCRName                  = "cluster"
+	ConsoleProxyAlias              = "ols"
+	ConsoleUINetworkPolicyName     = "lightspeed-console-plugin"
+
 	// Azure
 	AzureOpenAIType = "azure_openai"
 
