@@ -1,0 +1,11 @@
+internal/controller/console_deployment.go
+  e83a06fad0f73dc6 1-38,59,62-77,95-122,129-158,165-280
+internal/controller/console_reconciler_test.go
+  e83a06fad0f73dc6 1-71,73,75-79,95-137,182-268
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "ba74b4dd22ba0d97587ffe41ec5e2f4dd578675e",
+  "prompts": {}
+}
