@@ -115,6 +115,11 @@ func reconcileSARRole(h *common_helper.Helper, ctx context.Context, instance *ap
 				Resources: []string{"tokenreviews"},
 				Verbs:     []string{"create"},
 			},
+			{
+				APIGroups: []string{"config.openshift.io"},
+				Resources: []string{"clusterversions"},
+				Verbs:     []string{"list", "get"},
+			},
 		}
 		// Note: ClusterRole is cluster-scoped, no owner reference needed
 		return nil
