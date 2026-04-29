@@ -1,0 +1,58 @@
+internal/controller/constants.go
+  e83a06fad0f73dc6 106-117
+internal/controller/suite_test.go
+  e83a06fad0f73dc6 28-29,80-83
+internal/controller/console_deployment.go
+  e83a06fad0f73dc6 1-229
+internal/controller/openstacklightspeed_controller.go
+  e83a06fad0f73dc6 24,73-74,173-174,202,227,285
+api/v1beta1/openstacklightspeed_types.go
+  e83a06fad0f73dc6 39-40,192-193,211-212
+  7cb254f3dae0e0ca 42
+config/rbac/role.yaml
+  e83a06fad0f73dc6 16-26,53-61
+go.mod
+  e83a06fad0f73dc6 9,12,16,19-20,103
+cmd/main.go
+  e83a06fad0f73dc6 41-42,61-63
+internal/controller/console_reconciler_test.go
+  e83a06fad0f73dc6 1-71,73,75-79,81-210
+  7cb254f3dae0e0ca 72,74,80
+internal/controller/errors.go
+  e83a06fad0f73dc6 39-50
+internal/controller/console_reconciler.go
+  e83a06fad0f73dc6 1-368
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "4f2d19e4db7fe402ebf885aeee80e8451a3fb65c",
+  "prompts": {
+    "7cb254f3dae0e0ca": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "79ec8d9b-f9f2-4729-bfef-59969805f813",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": null,
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 113,
+      "accepted_lines": 22,
+      "overriden_lines": 0
+    },
+    "e83a06fad0f73dc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f3437b3c-40d6-4cb0-88c2-19886faf855a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor",
+      "messages": [],
+      "total_additions": 112,
+      "total_deletions": 3,
+      "accepted_lines": 847,
+      "overriden_lines": 0
+    }
+  }
+}
