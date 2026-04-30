@@ -266,9 +266,13 @@ func buildLCoreConfigYAML(h *common_helper.Helper, instance *apiv1beta1.OpenStac
 }
 
 func getVectorStoreID() string {
-	id := os.Getenv("VECTOR_STORE_ID")
-	if id == "" {
-		panic("VECTOR_STORE_ID environment variable is not set")
+	if id, ok := os.LookupEnv("VECTOR_STORE_ID"); ok {
+		return id
 	}
-	return id
+	return "vs_45a577b9-edac-4998-bd9d-917ca9573d55"
+	// id := os.Getenv("VECTOR_STORE_ID")
+	// if id == "" {
+	// 	panic("VECTOR_STORE_ID environment variable is not set")
+	// }
+	// return id
 }
