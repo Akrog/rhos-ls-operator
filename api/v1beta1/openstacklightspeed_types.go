@@ -41,6 +41,9 @@ const (
 	// ConsoleContainerImagePF5 is the fall-back console image for PatternFly 5 (OCP < 4.19)
 	ConsoleContainerImagePF5 = "registry.redhat.io/openshift-lightspeed/lightspeed-console-plugin-pf5-rhel9:1.0.12"
 
+	// MCPServerContainerImage is the fall-back container image for the MCP server
+	MCPServerContainerImage = "quay.io/openstack-lightspeed/rhos-mcps:latest"
+
 	// MaxTokensForResponseDefault is the default maximum number of tokens that should be used for response
 	MaxTokensForResponseDefault = 2048
 )
@@ -130,6 +133,11 @@ type OpenStackLightspeedStatus struct {
 	// ActiveOCPRAGVersion contains the OCP version being used for RAG configuration
 	// Will be one of: "4.16", "4.18", "latest", or empty if OCP RAG is disabled
 	ActiveOCPRAGVersion string `json:"activeOCPRAGVersion,omitempty"`
+
+	// +optional
+	// OpenStackReady indicates whether an OpenStackControlPlane was detected and
+	// is ready. When true, the OpenStack MCP tools are included in lightspeed-stack config.
+	OpenStackReady bool `json:"openStackReady,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -153,6 +161,9 @@ type OpenStackLightspeedStatus struct {
 // +operator-sdk:csv:customresourcedefinitions:resources={{NetworkPolicy,v1,lightspeed-postgres-server}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{ClusterRole,v1,lightspeed-app-server-sar-role}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{ClusterRoleBinding,v1,lightspeed-app-server-sar-role-binding}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{Deployment,v1,mcp-server}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{Service,v1,mcp-server-service}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{ConfigMap,v1,mcp-config}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{Subscription,v1alpha1}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{ClusterServiceVersion,v1alpha1}}
 // +operator-sdk:csv:customresourcedefinitions:resources={{InstallPlan,v1alpha1}}
@@ -191,6 +202,7 @@ type OpenStackLightspeedDefaults struct {
 	PostgresImageURL     string
 	ConsoleImageURL      string
 	ConsoleImagePF5URL   string
+	MCPServerImageURL    string
 	MaxTokensForResponse int
 }
 
@@ -212,6 +224,8 @@ func SetupDefaults() {
 			"RELATED_IMAGE_CONSOLE_IMAGE_URL_DEFAULT", ConsoleContainerImage),
 		ConsoleImagePF5URL: util.GetEnvVar(
 			"RELATED_IMAGE_CONSOLE_PF5_IMAGE_URL_DEFAULT", ConsoleContainerImagePF5),
+		MCPServerImageURL: util.GetEnvVar(
+			"RELATED_IMAGE_MCP_SERVER_IMAGE_URL_DEFAULT", MCPServerContainerImage),
 		MaxTokensForResponse: MaxTokensForResponseDefault,
 	}
 

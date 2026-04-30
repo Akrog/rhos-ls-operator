@@ -123,6 +123,11 @@ const (
 	ConsoleProxyAlias              = "ols"
 	ConsoleUINetworkPolicyName     = "lightspeed-console-plugin"
 
+	// OpenStack Control Plane
+	OpenStackControlPlaneGroup   = "core.openstack.org"
+	OpenStackControlPlaneVersion = "v1beta1"
+	OpenStackControlPlaneKind    = "OpenStackControlPlane"
+
 	// Azure
 	AzureOpenAIType = "azure_openai"
 

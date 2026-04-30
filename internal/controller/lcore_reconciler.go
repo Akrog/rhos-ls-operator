@@ -335,7 +335,7 @@ func reconcileDeployment(h *common_helper.Helper, ctx context.Context, instance 
 		deployment.Spec.Selector = &metav1.LabelSelector{
 			MatchLabels: generateAppServerSelectorLabels(),
 		}
-		deployment.Spec.Template = podTemplateSpec
+		updateDeploymentTemplate(deployment, podTemplateSpec)
 
 		// Set owner reference
 		return controllerutil.SetControllerReference(h.GetBeforeObject(), deployment, h.GetScheme())

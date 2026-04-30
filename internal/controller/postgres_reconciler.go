@@ -94,11 +94,9 @@ func reconcilePostgresBootstrapSecret(h *common_helper.Helper, ctx context.Conte
 	}
 
 	result, err := controllerutil.CreateOrPatch(ctx, h.GetClient(), secret, func() error {
-		// Set bootstrap script data
-		secret.StringData = map[string]string{
-			PostgresExtensionScript: PostgresBootStrapScriptContent,
+		secret.Data = map[string][]byte{
+			PostgresExtensionScript: []byte(PostgresBootStrapScriptContent),
 		}
-		// Set owner reference
 		return controllerutil.SetControllerReference(h.GetBeforeObject(), secret, h.GetScheme())
 	})
 
@@ -254,7 +252,7 @@ func reconcilePostgresDeploymentTask(h *common_helper.Helper, ctx context.Contex
 		deployment.Spec.Selector = &metav1.LabelSelector{
 			MatchLabels: generatePostgresSelectorLabels(),
 		}
-		deployment.Spec.Template = podTemplateSpec
+		updateDeploymentTemplate(deployment, podTemplateSpec)
 
 		// Also set RevisionHistoryLimit to match current behavior
 		revisionHistoryLimit := int32(1)

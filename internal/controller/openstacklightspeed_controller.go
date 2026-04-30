@@ -19,6 +19,8 @@ package controller
 import (
 	"context"
 	"fmt"
+	"sync/atomic"
+	"time"
 
 	"github.com/go-logr/logr"
 	consolev1 "github.com/openshift/api/console/v1"
@@ -28,6 +30,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	k8s_errors "k8s.io/apimachinery/pkg/api/errors"
 	uns "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -35,20 +38,35 @@ import (
 	"k8s.io/client-go/kubernetes"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
+	"sigs.k8s.io/controller-runtime/pkg/source"
 
 	apiv1beta1 "github.com/openstack-lightspeed/operator/api/v1beta1"
 )
 
+// DynamicWatchCRD maps GroupVersionKinds to a boolean flag indicating whether
+// the watch has been established. CRDs in this map do not need to exist at
+// operator startup; once detected, the operator registers a watch automatically.
+type DynamicWatchCRD map[schema.GroupVersionKind]*atomic.Bool
+
 // OpenStackLightspeedReconciler reconciles a OpenStackLightspeed object
 type OpenStackLightspeedReconciler struct {
 	client.Client
-	Scheme  *runtime.Scheme
-	Kclient kubernetes.Interface
+	Scheme     *runtime.Scheme
+	Kclient    kubernetes.Interface
+	controller controller.Controller
+	Cache      cache.Cache
+
+	// DynamicWatchCRD contains the list of CRDs that the operator should monitor.
+	// These CRDs do not need to exist when the operator starts. Once the operator
+	// detects that a CRD exists, it automatically registers a watch for it.
+	DynamicWatchCRD DynamicWatchCRD
 }
 
 // GetLogger returns a logger object with a prefix of "controller.name" and additional controller context fields
@@ -64,16 +82,18 @@ func (r *OpenStackLightspeedReconciler) GetLogger(ctx context.Context) logr.Logg
 // +kubebuilder:rbac:groups=operators.coreos.com,resources=clusterserviceversions,verbs=get;list;watch
 // +kubebuilder:rbac:groups=operators.coreos.com,resources=clusterserviceversions,namespace=openstack-lightspeed,verbs=update;patch;delete
 // +kubebuilder:rbac:groups=config.openshift.io,resources=clusterversions,verbs=get;list;watch
+// +kubebuilder:rbac:groups=apiextensions.k8s.io,resources=customresourcedefinitions,verbs=get;list;watch
+// +kubebuilder:rbac:groups=core.openstack.org,resources=openstackcontrolplanes,verbs=get;list;watch
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,namespace=openstack-lightspeed,verbs=get;list;watch;create;patch;update
 // +kubebuilder:rbac:groups=apps,resources=deployments,namespace=openstack-lightspeed,verbs=get;list;watch;create;update;patch
-// +kubebuilder:rbac:groups="",resources=configmaps,namespace=openstack-lightspeed,verbs=get;list;watch;create;patch;update;delete
-// +kubebuilder:rbac:groups="",resources=secrets,namespace=openstack-lightspeed,verbs=get;list;watch;create;patch;update;delete;deletecollection
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=get;list;watch;create;patch;update;delete
+// +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch;create;patch;update;delete;deletecollection
 // +kubebuilder:rbac:groups="",resources=services,namespace=openstack-lightspeed,verbs=get;list;watch;create;patch;update
 // +kubebuilder:rbac:groups="",resources=serviceaccounts,namespace=openstack-lightspeed,verbs=get;list;watch;create;patch
 // +kubebuilder:rbac:groups=console.openshift.io,resources=consoleplugins,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=operator.openshift.io,resources=consoles,verbs=watch;list;get;update
 
-func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.Request) (result ctrl.Result, e error) {
 	Log := r.GetLogger(ctx)
 	Log.Info("OpenStackLightspeed Reconciling")
 
@@ -98,6 +118,11 @@ func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.
 		return ctrl.Result{}, err
 	}
 
+	err = r.WatchDynamicCRD(ctx, helper)
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
 	// Save a copy of the conditions so that we can restore the LastTransitionTime
 	// when a condition's state doesn't change.
 	savedConditions := instance.Status.Conditions.DeepCopy()
@@ -110,7 +135,6 @@ func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.
 			panic(r)
 		}
 
-		condition.RestoreLastTransitionTimes(&instance.Status.Conditions, savedConditions)
 		// update the Ready condition based on the sub conditions
 		if instance.Status.Conditions.AllSubConditionIsTrue() {
 			instance.Status.Conditions.MarkTrue(
@@ -123,12 +147,18 @@ func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.
 			instance.Status.Conditions.Set(
 				instance.Status.Conditions.Mirror(condition.ReadyCondition))
 		}
+		condition.RestoreLastTransitionTimes(&instance.Status.Conditions, savedConditions)
 
 		err := helper.PatchInstance(ctx, instance)
 		if err != nil {
 			return
 		}
 
+		for _, GVKSeen := range r.DynamicWatchCRD {
+			if !GVKSeen.Load() {
+				result.RequeueAfter = 30 * time.Second
+			}
+		}
 	}()
 
 	cl := condition.CreateList(
@@ -136,6 +166,11 @@ func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.
 			apiv1beta1.OpenStackLightspeedReadyCondition,
 			condition.InitReason,
 			apiv1beta1.OpenStackLightspeedReadyInitMessage,
+		),
+		condition.UnknownCondition(
+			apiv1beta1.OpenStackLightspeedMCPServerReadyCondition,
+			condition.InitReason,
+			apiv1beta1.OpenStackLightspeedMCPServerInitMessage,
 		),
 	)
 
@@ -164,6 +199,23 @@ func (r *OpenStackLightspeedReconciler) Reconcile(ctx context.Context, req ctrl.
 	if instance.Spec.MaxTokensForResponse == 0 {
 		instance.Spec.MaxTokensForResponse = apiv1beta1.OpenStackLightspeedDefaultValues.MaxTokensForResponse
 	}
+
+	// Reconcile MCP server before LCore resources, because its result
+	// determines what goes into the lightspeed-stack config (mcp_servers section).
+	openStackReady, mcpErr := r.ReconcileMCPServer(ctx, helper, instance)
+	if mcpErr != nil {
+		instance.Status.Conditions.Set(condition.FalseCondition(
+			apiv1beta1.OpenStackLightspeedMCPServerReadyCondition,
+			condition.ErrorReason,
+			condition.SeverityWarning,
+			apiv1beta1.DeploymentCheckFailedMessage,
+			mcpErr.Error(),
+		))
+		return ctrl.Result{}, mcpErr
+	}
+
+	// Store the OpenStack readiness for config generation
+	instance.Status.OpenStackReady = openStackReady
 
 	reconcileTasks := []ReconcileTask{
 		{Name: "PostgresResources", Task: ReconcilePostgresResources},
@@ -225,6 +277,7 @@ func (r *OpenStackLightspeedReconciler) reconcileStatus(
 		PostgresDeploymentName,
 		LCoreDeploymentName,
 		ConsoleUIDeploymentName,
+		MCPDeploymentName,
 	}
 	for _, deploymentName := range deployments {
 		deployment, err := getDeployment(ctx, helper, deploymentName, instance.Namespace)
@@ -251,6 +304,19 @@ func (r *OpenStackLightspeedReconciler) reconcileStatus(
 		}
 	}
 
+	// Mark MCP server condition based on readiness
+	if instance.Status.OpenStackReady {
+		instance.Status.Conditions.MarkTrue(
+			apiv1beta1.OpenStackLightspeedMCPServerReadyCondition,
+			apiv1beta1.OpenStackLightspeedMCPServerDeployed,
+		)
+	} else {
+		instance.Status.Conditions.MarkTrue(
+			apiv1beta1.OpenStackLightspeedMCPServerReadyCondition,
+			apiv1beta1.OpenStackLightspeedMCPServerWaitingOpenStack,
+		)
+	}
+
 	instance.Status.Conditions.MarkTrue(
 		apiv1beta1.OpenStackLightspeedReadyCondition,
 		apiv1beta1.OpenStackLightspeedReadyMessage,
@@ -272,7 +338,7 @@ func (r *OpenStackLightspeedReconciler) SetupWithManager(mgr ctrl.Manager) error
 		Kind:    "ClusterVersion",
 	})
 
-	return ctrl.NewControllerManagedBy(mgr).
+	c, err := ctrl.NewControllerManagedBy(mgr).
 		For(&apiv1beta1.OpenStackLightspeed{}).
 		Owns(&operatorsv1alpha1.ClusterServiceVersion{}).
 		Owns(&appsv1.Deployment{}).
@@ -288,7 +354,18 @@ func (r *OpenStackLightspeedReconciler) SetupWithManager(mgr ctrl.Manager) error
 			handler.EnqueueRequestsFromMapFunc(r.NotifyAllOpenStackLightspeeds),
 			builder.WithPredicates(predicate.ResourceVersionChangedPredicate{}),
 		).
-		Complete(r)
+		Watches(
+			&apiextensionsv1.CustomResourceDefinition{},
+			handler.EnqueueRequestsFromMapFunc(r.NotifyAllOpenStackLightspeeds),
+			builder.WithPredicates(predicate.ResourceVersionChangedPredicate{}),
+		).
+		Build(r)
+	if err != nil {
+		return err
+	}
+
+	r.controller = c
+	return nil
 }
 
 // NotifyAllOpenStackLightspeeds returns a list of reconcile requests for all OpenStackLightspeed objects.
@@ -321,4 +398,48 @@ func (r *OpenStackLightspeedReconciler) NotifyAllOpenStackLightspeeds(ctx contex
 	}
 
 	return requests
+}
+
+// WatchDynamicCRD dynamically registers watches for resources whose CRDs are listed
+// in r.DynamicWatchCRD. When a target CRD is detected as existing and available in the
+// cluster, this method ensures that the controller starts watching resources of that type.
+// This enables reconciliation to be triggered whenever those resources are created or modified.
+func (r *OpenStackLightspeedReconciler) WatchDynamicCRD(
+	ctx context.Context,
+	helper *common_helper.Helper,
+) error {
+	for gvk, seen := range r.DynamicWatchCRD {
+		if seen.Load() {
+			continue
+		}
+
+		crdAvailable, err := IsCRDEstablished(ctx, helper, gvk)
+		if err != nil {
+			return err
+		}
+
+		if !crdAvailable {
+			continue
+		}
+
+		GVKUnstructObj := &uns.Unstructured{}
+		GVKUnstructObj.SetGroupVersionKind(gvk)
+		err = r.controller.Watch(
+			source.Kind(
+				r.Cache,
+				GVKUnstructObj,
+				handler.TypedEnqueueRequestsFromMapFunc(func(ctx context.Context, o *uns.Unstructured) []ctrl.Request {
+					return r.NotifyAllOpenStackLightspeeds(ctx, o)
+				}),
+				predicate.TypedResourceVersionChangedPredicate[*uns.Unstructured]{},
+			),
+		)
+		if err != nil {
+			return fmt.Errorf("failed to set up watch for %s: %w", GetCRDName(gvk), err)
+		}
+
+		seen.Store(true)
+	}
+
+	return nil
 }

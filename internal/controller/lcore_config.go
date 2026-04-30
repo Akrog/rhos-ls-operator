@@ -240,6 +240,30 @@ func buildLCoreBYOKRAGConfig(instance *apiv1beta1.OpenStackLightspeed) []interfa
 	return byokRAG
 }
 
+// buildLCoreMCPServersConfig generates the mcp_servers section for lightspeed-stack config.
+// The OpenShift MCP (rhos-ocp-tools) is always included.
+// The OpenStack MCP (rhos-osp-tools) is only included when openStackReady is true.
+func buildLCoreMCPServersConfig(openStackReady bool) []interface{} {
+	mcpServers := []interface{}{
+		map[string]interface{}{
+			"name": "rhos-ocp-tools",
+			"url":  fmt.Sprintf("%s/openshift/", GetMCPServerURL()),
+			"authorization_headers": map[string]interface{}{
+				"OCP_TOKEN": "kubernetes",
+			},
+		},
+	}
+
+	if openStackReady {
+		mcpServers = append(mcpServers, map[string]interface{}{
+			"name": "rhos-osp-tools",
+			"url":  fmt.Sprintf("%s/openstack/", GetMCPServerURL()),
+		})
+	}
+
+	return mcpServers
+}
+
 func buildLCoreConfigYAML(h *common_helper.Helper, instance *apiv1beta1.OpenStackLightspeed) (string, error) {
 	// Build the complete config as a map
 	config := map[string]interface{}{
@@ -254,6 +278,7 @@ func buildLCoreConfigYAML(h *common_helper.Helper, instance *apiv1beta1.OpenStac
 		"conversation_cache":   buildLCoreConversationCacheConfig(h, instance),
 		"byok_rag":             buildLCoreBYOKRAGConfig(instance),
 		"rag":                  buildLCoreRAGConfig(instance),
+		"mcp_servers":          buildLCoreMCPServersConfig(instance.Status.OpenStackReady),
 	}
 
 	// Convert to YAML

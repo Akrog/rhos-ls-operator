@@ -25,7 +25,7 @@ metadata:
       ]
     capabilities: Basic Install
     categories: AI/Machine Learning
-    createdAt: "2026-04-09T11:08:52Z"
+    createdAt: "2026-04-30T19:45:57Z"
     description: AI-powered virtual assistant for Red Hat OpenStack Services on OpenShift
     features.operators.openshift.io/cnf: "false"
     features.operators.openshift.io/cni: "false"
@@ -38,7 +38,7 @@ metadata:
     features.operators.openshift.io/token-auth-azure: "false"
     features.operators.openshift.io/token-auth-gcp: "false"
     operatorframework.io/suggested-namespace: openstack-lightspeed
-    operators.operatorframework.io/builder: operator-sdk-v1.38.0
+    operators.operatorframework.io/builder: operator-sdk-v1.41.1
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v4
     repository: https://github.com/openstack-lightspeed/operator
   name: openstack-lightspeed-operator.v0.0.1
@@ -110,6 +110,15 @@ spec:
       - kind: ConfigMap
         name: llama-stack-config
         version: v1
+      - kind: ConfigMap
+        name: mcp-config
+        version: v1
+      - kind: Deployment
+        name: mcp-server
+        version: v1
+      - kind: Service
+        name: mcp-server-service
+        version: v1
       - kind: Secret
         name: metrics-reader-token
         version: v1
@@ -147,9 +156,62 @@ spec:
       clusterPermissions:
       - rules:
         - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - secrets
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apiextensions.k8s.io
+          resources:
+          - customresourcedefinitions
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
           - config.openshift.io
           resources:
           - clusterversions
+          verbs:
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - console.openshift.io
+          resources:
+          - consoleplugins
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - core.openstack.org
+          resources:
+          - openstackcontrolplanes
           verbs:
           - get
           - list
@@ -180,6 +242,15 @@ spec:
           - get
           - patch
           - update
+        - apiGroups:
+          - operator.openshift.io
+          resources:
+          - consoles
+          verbs:
+          - get
+          - list
+          - update
+          - watch
         - apiGroups:
           - operators.coreos.com
           resources:
@@ -254,7 +325,9 @@ spec:
                   value: quay.io/lightspeed-core/lightspeed-to-dataverse-exporter:latest
                 - name: RELATED_IMAGE_POSTGRES_IMAGE_URL_DEFAULT
                   value: registry.redhat.io/rhel9/postgresql-16:latest
-                image: quay.io/openstack-lightspeed/operator:latest
+                - name: RELATED_IMAGE_MCP_SERVER_IMAGE_URL_DEFAULT
+                  value: quay.io/openstack-lightspeed/rhos-mcps:latest
+                image: quay.io/geguileo/operator:latest
                 livenessProbe:
                   httpGet:
                     path: /healthz
@@ -271,10 +344,10 @@ spec:
                 resources:
                   limits:
                     cpu: 500m
-                    memory: 128Mi
+                    memory: 256Mi
                   requests:
                     cpu: 10m
-                    memory: 64Mi
+                    memory: 128Mi
                 securityContext:
                   allowPrivilegeEscalation: false
                   capabilities:
@@ -317,31 +390,6 @@ spec:
           verbs:
           - create
           - patch
-        - apiGroups:
-          - ""
-          resources:
-          - configmaps
-          verbs:
-          - create
-          - delete
-          - get
-          - list
-          - patch
-          - update
-          - watch
-        - apiGroups:
-          - ""
-          resources:
-          - secrets
-          verbs:
-          - create
-          - delete
-          - deletecollection
-          - get
-          - list
-          - patch
-          - update
-          - watch
         - apiGroups:
           - ""
           resources:
@@ -433,4 +481,6 @@ spec:
     name: exporter-image-url-default
   - image: registry.redhat.io/rhel9/postgresql-16:latest
     name: postgres-image-url-default
+  - image: quay.io/openstack-lightspeed/rhos-mcps:latest
+    name: mcp-server-image-url-default
   version: 0.0.1

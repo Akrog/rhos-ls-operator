@@ -180,7 +180,7 @@ func reconcileConsoleDeploymentResource(h *common_helper.Helper, ctx context.Con
 		spec := buildConsoleDeploymentSpec(consoleImage)
 		deployment.Spec.Replicas = spec.Replicas
 		deployment.Spec.Selector = spec.Selector
-		deployment.Spec.Template = spec.Template
+		updateDeploymentTemplate(deployment, spec.Template)
 		return controllerutil.SetControllerReference(h.GetBeforeObject(), deployment, h.GetScheme())
 	})
 

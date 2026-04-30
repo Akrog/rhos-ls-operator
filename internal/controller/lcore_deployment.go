@@ -75,7 +75,7 @@ func buildLCorePodTemplateSpec(h *common_helper.Helper, ctx context.Context, ins
 		Name:         "llama-stack",
 		Image:        apiv1beta1.OpenStackLightspeedDefaultValues.LCoreImageURL,
 		Command:      []string{"llama", "stack", "run", LlamaStackConfigMountPath},
-		Ports:        []corev1.ContainerPort{{Name: "llama-stack", ContainerPort: LlamaStackContainerPort}},
+		Ports:        []corev1.ContainerPort{{Name: "llama-stack", ContainerPort: LlamaStackContainerPort, Protocol: corev1.ProtocolTCP}},
 		VolumeMounts: llamaStackMounts,
 		Env:          llamaEnvVars,
 		ReadinessProbe: &corev1.Probe{
@@ -86,6 +86,9 @@ func buildLCorePodTemplateSpec(h *common_helper.Helper, ctx context.Context, ins
 			},
 			InitialDelaySeconds: 5,
 			PeriodSeconds:       10,
+			TimeoutSeconds:      1,
+			SuccessThreshold:    1,
+			FailureThreshold:    3,
 		},
 		Resources:       getResourcesOrDefault(nil, corev1.ResourceRequirements{}),
 		ImagePullPolicy: corev1.PullIfNotPresent,
@@ -101,7 +104,7 @@ func buildLCorePodTemplateSpec(h *common_helper.Helper, ctx context.Context, ins
 	lightspeedStackContainer := corev1.Container{
 		Name:            "lightspeed-service-api",
 		Image:           apiv1beta1.OpenStackLightspeedDefaultValues.LCoreImageURL,
-		Ports:           []corev1.ContainerPort{{Name: "https", ContainerPort: OpenStackLightspeedAppServerContainerPort}},
+		Ports:           []corev1.ContainerPort{{Name: "https", ContainerPort: OpenStackLightspeedAppServerContainerPort, Protocol: corev1.ProtocolTCP}},
 		VolumeMounts:    lightspeedStackMounts,
 		Env:             lsEnvVars,
 		LivenessProbe:   buildLightspeedStackLivenessProbe(),
@@ -490,6 +493,7 @@ func buildLightspeedStackLivenessProbe() *corev1.Probe {
 		InitialDelaySeconds: 30,
 		PeriodSeconds:       10,
 		TimeoutSeconds:      5,
+		SuccessThreshold:    1,
 		FailureThreshold:    3,
 	}
 }
@@ -505,6 +509,7 @@ func buildLightspeedStackReadinessProbe() *corev1.Probe {
 		InitialDelaySeconds: 30,
 		PeriodSeconds:       10,
 		TimeoutSeconds:      5,
+		SuccessThreshold:    1,
 		FailureThreshold:    3,
 	}
 }
