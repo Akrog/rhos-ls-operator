@@ -1,0 +1,57 @@
+cmd/main.go
+  7939cb8100ad81e1 25,31,33,35,68-69,154-162,192-197,199-203,241-260
+internal/controller/lcore_reconciler.go
+  7939cb8100ad81e1 338
+internal/controller/openstacklightspeed_controller.go
+  7939cb8100ad81e1 22-23,33,41,43,48,53-57,61-69,85-86,89-90,96,121-125,150,157-161,170-174,203-219,280,307-319,341,357-368,402-445
+internal/controller/console_reconciler.go
+  7939cb8100ad81e1 183
+internal/controller/lcore_deployment.go
+  7939cb8100ad81e1 78,89-91,107,496,512
+api/v1beta1/openstacklightspeed_types.go
+  7939cb8100ad81e1 44-46,136-140,164-166,205,227-228
+internal/controller/mcp_server_test.go
+  7939cb8100ad81e1 1-76
+internal/controller/deployment_helpers_test.go
+  7939cb8100ad81e1 1-307
+internal/controller/mcp_server.go
+  7939cb8100ad81e1 1-511
+internal/controller/common.go
+  7939cb8100ad81e1 26,28-29,32,34-35,37,40,185-400
+internal/controller/postgres_reconciler.go
+  7939cb8100ad81e1 97-98,255
+internal/controller/deployment_helpers.go
+  7939cb8100ad81e1 1-123
+internal/controller/mcp_server_config.yaml
+  7939cb8100ad81e1 1-22
+internal/controller/constants.go
+  7939cb8100ad81e1 126-130
+bundle/manifests/openstack-lightspeed-operator.clusterserviceversion.yaml
+  7939cb8100ad81e1 347,350
+internal/controller/lcore_config.go
+  7939cb8100ad81e1 243-266,281
+config/manager/manager.yaml
+  7939cb8100ad81e1 81-82,105,108
+api/v1beta1/conditions.go
+  7939cb8100ad81e1 31-34,71-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "d0194ebfbf2167957c231327cea0001b173e1def",
+  "prompts": {
+    "7939cb8100ad81e1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "07ba3ec2-4984-4fc2-b605-98192eab7a36",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor",
+      "messages": [],
+      "total_additions": 1614,
+      "total_deletions": 124,
+      "accepted_lines": 1512,
+      "overriden_lines": 3
+    }
+  }
+}
