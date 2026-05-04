@@ -123,18 +123,19 @@ func buildLlamaStackInferenceProviders(_ *common_helper.Helper, _ context.Contex
 
 		// Map provider types to Llama Stack provider types
 		switch provider.Type {
-		case "openai", "rhoai_vllm", "rhelai_vllm":
+		case "openai", "anthropic", "rhoai_vllm", "rhelai_vllm":
 			config := map[string]interface{}{}
 			// Determine the appropriate Llama Stack provider type:
 			//  - OpenAI uses remote::openai
+			//  - Anthropic uses remote::anthropic
 			//  - vLLM uses remote::vllm
 			var apiKeyField string
-			if provider.Type == "openai" {
-				providerConfig["provider_type"] = "remote::openai"
-				apiKeyField = "api_key"
-			} else {
+			if strings.HasSuffix(provider.Type, "_vllm") {
 				providerConfig["provider_type"] = "remote::vllm"
 				apiKeyField = "api_token"
+			} else {
+				providerConfig["provider_type"] = "remote::" + provider.Type
+				apiKeyField = "api_key"
 			}
 			// Llama Stack will substitute ${env.VAR_NAME} with the actual env var value
 			config[apiKeyField] = fmt.Sprintf("${env.%s%s}", envVarName, EnvVarSuffixAPIKey)

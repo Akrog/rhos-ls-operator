@@ -76,6 +76,7 @@ spec:
               llmEndpointType:
                 description: Type of the provider serving the LLM
                 enum:
+                - anthropic
                 - azure_openai
                 - bam
                 - openai
@@ -112,7 +113,6 @@ spec:
                 type: boolean
             required:
             - llmCredentials
-            - llmEndpoint
             - llmEndpointType
             - modelName
             type: object

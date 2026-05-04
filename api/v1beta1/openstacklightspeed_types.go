@@ -69,13 +69,13 @@ type OpenStackLightspeedSpec struct {
 
 // OpenStackLightspeedCore defines the desired state of OpenStackLightspeed
 type OpenStackLightspeedCore struct {
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="LLM Endpoint"
 	// URL pointing to the LLM
 	LLMEndpoint string `json:"llmEndpoint"`
 
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:Enum=azure_openai;bam;openai;watsonx;rhoai_vllm;rhelai_vllm;fake_provider
+	// +kubebuilder:validation:Enum=anthropic;azure_openai;bam;openai;watsonx;rhoai_vllm;rhelai_vllm;fake_provider
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Provider Type"
 	// Type of the provider serving the LLM
 	LLMEndpointType string `json:"llmEndpointType"`
