@@ -1,0 +1,22 @@
+internal/controller/console_reconciler_test.go
+  s_54b20994958587::t_2e50111742f120 48-52
+  s_54b20994958587::t_b2b5e312895979 25
+  s_54b20994958587::t_bcaf170e22b246 212
+  s_54b20994958587::t_78f14f453c8d8e 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "50f2e8091359c43df1c8f8da2994fde51e840a6c",
+  "prompts": {},
+  "sessions": {
+    "s_54b20994958587": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7298a4e8-be83-4c98-aa4b-59fc8c010d1f",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
+}
