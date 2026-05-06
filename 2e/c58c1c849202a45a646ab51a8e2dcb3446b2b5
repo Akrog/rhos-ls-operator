@@ -1,0 +1,9 @@
+internal/controller/console_deployment.go
+  ai_agent 41-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "2ec58c1c849202a45a646ab51a8e2dcb3446b2b5",
+  "prompts": {}
+}
