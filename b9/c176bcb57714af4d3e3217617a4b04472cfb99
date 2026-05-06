@@ -1,0 +1,22 @@
+internal/controller/console_reconciler.go
+  e83a06fad0f73dc6 1-148,160-162,165-369
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "b9c176bcb57714af4d3e3217617a4b04472cfb99",
+  "prompts": {
+    "e83a06fad0f73dc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f3437b3c-40d6-4cb0-88c2-19886faf855a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor",
+      "total_additions": 112,
+      "total_deletions": 3,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}

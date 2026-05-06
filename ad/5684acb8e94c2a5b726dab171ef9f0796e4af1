@@ -1,0 +1,58 @@
+internal/controller/errors.go
+  e83a06fad0f73dc6 39-50
+internal/controller/openstacklightspeed_controller.go
+  e83a06fad0f73dc6 24,73-74,173-174,202,227,285
+internal/controller/constants.go
+  e83a06fad0f73dc6 106-117
+cmd/main.go
+  e83a06fad0f73dc6 41-42,61-63
+api/v1beta1/openstacklightspeed_types.go
+  7cb254f3dae0e0ca 39,42
+  e83a06fad0f73dc6 40,192-193,211-212
+go.sum
+  ai_agent 112-113
+go.mod
+  ai_agent 9,19-21
+  e83a06fad0f73dc6 12,16,22,105
+internal/controller/console_deployment.go
+  e83a06fad0f73dc6 1-82,84-109,114-229
+internal/controller/console_reconciler.go
+  e83a06fad0f73dc6 1-148,159-161,164-368
+internal/controller/console_reconciler_test.go
+  e83a06fad0f73dc6 1-71,73,75-79,83-122,124-210
+config/rbac/role.yaml
+  e83a06fad0f73dc6 16-26,53-61
+internal/controller/suite_test.go
+  e83a06fad0f73dc6 28-29,80-83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "ad5684acb8e94c2a5b726dab171ef9f0796e4af1",
+  "prompts": {
+    "7cb254f3dae0e0ca": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "79ec8d9b-f9f2-4729-bfef-59969805f813",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor",
+      "total_additions": 32,
+      "total_deletions": 6,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "e83a06fad0f73dc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f3437b3c-40d6-4cb0-88c2-19886faf855a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor",
+      "total_additions": 112,
+      "total_deletions": 3,
+      "accepted_lines": 856,
+      "overriden_lines": 0
+    }
+  }
+}
