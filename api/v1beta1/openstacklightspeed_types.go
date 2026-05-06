@@ -29,6 +29,9 @@ const (
 	// LCoreContainerImage is the fall-back container image for LCore
 	LCoreContainerImage = "quay.io/lightspeed-core/lightspeed-stack:latest"
 
+	// OGXContainerImage is the fall-back container image for OGX (llama-stack)
+	OGXContainerImage = "quay.io/geguileo/ogx:latest"
+
 	// ExporterContainerImage is the fall-back container image for the Dataverse Exporter
 	ExporterContainerImage = "quay.io/lightspeed-core/lightspeed-to-dataverse-exporter:latest"
 
@@ -198,6 +201,7 @@ func (instance OpenStackLightspeed) IsReady() bool {
 type OpenStackLightspeedDefaults struct {
 	RAGImageURL          string
 	LCoreImageURL        string
+	OGXImageURL          string
 	ExporterImageURL     string
 	PostgresImageURL     string
 	ConsoleImageURL      string
@@ -216,6 +220,8 @@ func SetupDefaults() {
 			"RELATED_IMAGE_OPENSTACK_LIGHTSPEED_IMAGE_URL_DEFAULT", OpenStackLightspeedContainerImage),
 		LCoreImageURL: util.GetEnvVar(
 			"RELATED_IMAGE_LCORE_IMAGE_URL_DEFAULT", LCoreContainerImage),
+		OGXImageURL: util.GetEnvVar(
+			"RELATED_IMAGE_OGX_IMAGE_URL_DEFAULT", OGXContainerImage ),
 		ExporterImageURL: util.GetEnvVar(
 			"RELATED_IMAGE_EXPORTER_IMAGE_URL_DEFAULT", ExporterContainerImage),
 		PostgresImageURL: util.GetEnvVar(

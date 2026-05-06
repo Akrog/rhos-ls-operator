@@ -73,7 +73,7 @@ func buildLCorePodTemplateSpec(h *common_helper.Helper, ctx context.Context, ins
 
 	llamaStackContainer := corev1.Container{
 		Name:         "llama-stack",
-		Image:        apiv1beta1.OpenStackLightspeedDefaultValues.LCoreImageURL,
+		Image:        apiv1beta1.OpenStackLightspeedDefaultValues.OGXImageURL,
 		Command:      []string{"llama", "stack", "run", LlamaStackConfigMountPath},
 		Ports:        []corev1.ContainerPort{{Name: "llama-stack", ContainerPort: LlamaStackContainerPort, Protocol: corev1.ProtocolTCP}},
 		VolumeMounts: llamaStackMounts,
