@@ -1,7 +1,24 @@
+internal/controller/console_deployment.go
+  e83a06fad0f73dc6 1-38,59,62-77,95-121,129-154,165-280
+internal/controller/console_reconciler_test.go
+  e83a06fad0f73dc6 1-71,73,75-79,97-136,182-268
 ---
 {
   "schema_version": "authorship/3.0.0",
   "git_ai_version": "1.4.1",
   "base_commit_sha": "6c5f1f930ae2a3ded5bf8d557d4d08253a106d53",
-  "prompts": {}
+  "prompts": {
+    "e83a06fad0f73dc6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f3437b3c-40d6-4cb0-88c2-19886faf855a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor",
+      "total_additions": 112,
+      "total_deletions": 3,
+      "accepted_lines": 48,
+      "overriden_lines": 0
+    }
+  }
 }
