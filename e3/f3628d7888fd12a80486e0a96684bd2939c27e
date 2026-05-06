@@ -3,13 +3,15 @@ internal/controller/console_reconciler_test.go
   s_54b20994958587::t_b2b5e312895979 27
   s_54b20994958587::t_78f14f453c8d8e 29
   s_54b20994958587::t_2e50111742f120 50-54
-  s_54b20994958587::t_bcaf170e22b246 272
-  s_54b20994958587::t_9460b60591a0ea 276-317
+  s_54b20994958587::t_bcaf170e22b246 214
+  s_54b20994958587::t_9460b60591a0ea 218-259
+internal/controller/console_reconciler.go
+  s_54b20994958587::t_e373c2426cc702 142,144-159,165,168-173,176
 ---
 {
   "schema_version": "authorship/3.0.0",
   "git_ai_version": "1.4.1",
-  "base_commit_sha": "da727cafe76da1048d42b3a15b665fd303b7e563",
+  "base_commit_sha": "e3f3628d7888fd12a80486e0a96684bd2939c27e",
   "prompts": {},
   "sessions": {
     "s_54b20994958587": {
