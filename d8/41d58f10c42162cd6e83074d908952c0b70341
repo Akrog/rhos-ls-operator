@@ -1,0 +1,19 @@
+internal/controller/openstacklightspeed_controller_test.go
+  s_710d8d923f982b::t_589b2222286af5 54-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "d841d58f10c42162cd6e83074d908952c0b70341",
+  "prompts": {},
+  "sessions": {
+    "s_710d8d923f982b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "072e39c1-3488-4ae5-9272-99e74cbe1d04",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": null
+    }
+  }
+}
