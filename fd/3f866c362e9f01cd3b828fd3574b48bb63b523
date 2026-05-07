@@ -1,0 +1,31 @@
+internal/controller/console_deployment.go
+  s_bddbef863e982c::t_5dd4baa1ba8239 20-21
+  s_bddbef863e982c::t_128fe554155b5c 157,172-173,178
+internal/controller/console_reconciler.go
+  s_8df817ff06eae4::t_13ef9a9103f4eb 40-41
+  s_8df817ff06eae4::t_afb9f22e11502c 223-230
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "fd3f866c362e9f01cd3b828fd3574b48bb63b523",
+  "prompts": {},
+  "sessions": {
+    "s_8df817ff06eae4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db5008cc-f453-4b7c-8608-b685ce616cab",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    },
+    "s_bddbef863e982c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "681979c3-e53f-410a-8937-524b6ac8a02b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+scripts/ocp-catalog-build.sh
+  s_4a2688940a1a8d::t_10fb397443d6e2 1-54
+Makefile
+  s_4a2688940a1a8d::t_4217bbc8b04ef3 45-48
+  s_4a2688940a1a8d::t_04d30d80a0e531 286,289,294,299
+  s_4a2688940a1a8d::t_a6273ed1bb6b9c 287-288,290-293,298
+  s_4a2688940a1a8d::t_ceb769a40f2392 295-296
+  s_4a2688940a1a8d::t_6c5da40cb8b6a1 297
+scripts/ocp-registry-push.sh
+  s_4a2688940a1a8d::t_fdb38c68ac22aa 1-52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "309fa1430a55989ccd19106900172b874798dd74",
+  "prompts": {},
+  "sessions": {
+    "s_4a2688940a1a8d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ad15f926-d1ca-4f43-9f20-e150611263be",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
+}
