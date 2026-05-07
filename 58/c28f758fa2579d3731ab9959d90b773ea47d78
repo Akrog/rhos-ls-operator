@@ -1,0 +1,26 @@
+internal/controller/console_reconciler_test.go
+  s_54b20994958587::t_e22aa47d6deeee 23-24
+  s_54b20994958587::t_b2b5e312895979 27
+  s_54b20994958587::t_78f14f453c8d8e 29
+  s_54b20994958587::t_2e50111742f120 50-54
+  s_54b20994958587::t_bcaf170e22b246 214
+  s_54b20994958587::t_9460b60591a0ea 218-259
+internal/controller/console_reconciler.go
+  s_54b20994958587::t_e373c2426cc702 142,144-159,165,168-173,176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "58c28f758fa2579d3731ab9959d90b773ea47d78",
+  "prompts": {},
+  "sessions": {
+    "s_54b20994958587": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7298a4e8-be83-4c98-aa4b-59fc8c010d1f",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": null
+    }
+  }
+}
