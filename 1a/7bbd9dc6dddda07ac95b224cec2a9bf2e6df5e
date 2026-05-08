@@ -1,0 +1,35 @@
+internal/controller/console_deployment.go
+  s_1c32ae022e59dd::t_ef703a347350b6 70-72,117
+test/kuttl/tests/update-openstacklightspeed/10-assert-openstacklightspeed-update.yaml
+  s_699fd84986e14a::t_358f06b7237137 81-109
+internal/controller/console_reconciler.go
+  s_1c32ae022e59dd::t_232cd49e3d5e08 154
+test/kuttl/common/openstack-lightspeed-instance/errors-openstack-lightspeed-instance.yaml
+  s_699fd84986e14a::t_d9529f07087a1a 45-81
+test/kuttl/common/openstack-lightspeed-instance/assert-openstack-lightspeed-instance.yaml
+  s_699fd84986e14a::t_500fc3814e7885 131-159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "1a7bbd9dc6dddda07ac95b224cec2a9bf2e6df5e",
+  "prompts": {},
+  "sessions": {
+    "s_1c32ae022e59dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5d74b6d9-fc1b-43c2-bd4f-4455f9844b04",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": null
+    },
+    "s_699fd84986e14a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0d3f75d3-93c9-4175-96f2-8ea0c9408ec0",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
+}
