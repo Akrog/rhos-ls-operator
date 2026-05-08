@@ -1,0 +1,19 @@
+scripts/ocp-catalog-build.sh
+  s_e325a161c9db52::t_f73fbec1b71cd6 30-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "c6f3fc4613ce982ff5674198088b077d516c8c43",
+  "prompts": {},
+  "sessions": {
+    "s_e325a161c9db52": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c800a47c-0935-4116-8c55-bd515e348443",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
+}
