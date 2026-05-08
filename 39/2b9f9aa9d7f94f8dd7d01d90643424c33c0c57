@@ -1,0 +1,19 @@
+internal/controller/console_deployment.go
+  s_1c32ae022e59dd::t_370cec3e8cbb64 84-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "392b9f9aa9d7f94f8dd7d01d90643424c33c0c57",
+  "prompts": {},
+  "sessions": {
+    "s_1c32ae022e59dd": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5d74b6d9-fc1b-43c2-bd4f-4455f9844b04",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
+}
