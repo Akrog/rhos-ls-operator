@@ -1,7 +1,22 @@
+test/kuttl/common/openstack-lightspeed-instance/assert-openstack-lightspeed-instance.yaml
+  s_699fd84986e14a::t_f40ed3d84ea53c 156-163
+test/kuttl/tests/update-openstacklightspeed/10-assert-openstacklightspeed-update.yaml
+  s_699fd84986e14a::t_358f06b7237137 81-105,114-117
+  s_699fd84986e14a::t_a9c8d8c4ae78b6 106-113
 ---
 {
   "schema_version": "authorship/3.0.0",
   "git_ai_version": "1.4.1",
   "base_commit_sha": "9108c178aba0b7608053b491ddc581fd424b9eca",
-  "prompts": {}
+  "prompts": {},
+  "sessions": {
+    "s_699fd84986e14a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0d3f75d3-93c9-4175-96f2-8ea0c9408ec0",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Gorka Eguileor <geguileo@redhat.com>"
+    }
+  }
 }
